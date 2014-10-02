@@ -54,9 +54,7 @@ private:
 	POINT mLastMousePos;
 };
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
-	PSTR cmdLine, int showCmd)
-{
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd){
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -103,6 +101,7 @@ Midterm::Midterm(HINSTANCE hInstance) : D3DApp(hInstance), mCube(0), mDynamicCub
 Midterm::~Midterm(){
 	SafeDelete(mCube);
 
+	ReleaseCOM(mFloorTexSRV);
 	ReleaseCOM(mDynamicCubeMapDSV);
 	ReleaseCOM(mDynamicCubeMapSRV);
 	for (int i = 0; i < 6; ++i)
@@ -110,7 +109,6 @@ Midterm::~Midterm(){
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
-
 }
 
 bool Midterm::Init(){
@@ -121,7 +119,7 @@ bool Midterm::Init(){
 	Effects::InitAll(md3dDevice);
 	InputLayouts::InitAll(md3dDevice);
 
-	mCube = new Cubemap(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f);
+	mCube = new Cubemap(md3dDevice, L"Textures/grasscube1024.dds", 500.0f);
 
 	BuildDynamicCubeMapViews();
 
@@ -204,14 +202,14 @@ void Midterm::DrawScene(const Camera& camera){
 	ID3DX11EffectTechnique* activeReflectTech = Effects::BasicFX->Light1ReflectTech;
 	switch (mLightCount){
 	case 1:
+		activeTexTech = Effects::BasicFX->Light1TexTech;
+		activeSkullTech = Effects::BasicFX->Light1Tech;
+		activeReflectTech = Effects::BasicFX->Light1ReflectTech;
+		break;
+	case 2:
 		activeTexTech = Effects::BasicFX->Light2TexTech;
 		activeSkullTech = Effects::BasicFX->Light2Tech;
 		activeReflectTech = Effects::BasicFX->Light2ReflectTech;
-		break;
-	case 2:
-		activeTexTech = Effects::BasicFX->Light3TexTech;
-		activeSkullTech = Effects::BasicFX->Light3Tech;
-		activeReflectTech = Effects::BasicFX->Light3ReflectTech;
 		break;
 	}
 

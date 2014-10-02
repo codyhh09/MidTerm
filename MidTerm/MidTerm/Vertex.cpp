@@ -30,7 +30,7 @@ void InputLayouts::InitAll(ID3D11Device* device)
 	// Pos
 	//
 
-	Effects::SkyFX->SkyTech->GetPassByIndex(0)->GetDesc(&passDesc);
+	Effects::CubemapFX->SkyTech->GetPassByIndex(0)->GetDesc(&passDesc);
 	HR(device->CreateInputLayout(InputLayoutDesc::Pos, 1, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &Pos));
 

@@ -55,6 +55,7 @@
     <FxCompile />
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <ShaderType>Effect</ShaderType>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,7 +85,9 @@
     <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\xnacollision.cpp" />
     <ClCompile Include="cubemap.cpp" />
     <ClCompile Include="Effects.cpp" />
-    <ClCompile Include="Midterm.cpp" />
+    <ClCompile Include="Midterm.cpp">
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</SDLCheck>
+    </ClCompile>
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
