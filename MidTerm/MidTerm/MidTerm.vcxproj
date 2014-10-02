@@ -19,7 +19,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,7 +38,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(IncludePath);$(DXSDK_DIR)Include;C:\Users\choward8\Documents\Visual Studio 2013\3DGameProgramming\Common</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DXSDK_DIR)Lib\x86;C:\Users\choward8\Documents\Visual Studio 2013\3DGameProgramming\Common</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -47,7 +50,12 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;D3DCompiler.lib;Effects11d.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile />
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -64,6 +72,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\Camera.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\d3dApp.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\d3dUtil.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\GameTimer.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\GeometryGenerator.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\LightHelper.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\MathHelper.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\TextureMgr.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\Waves.cpp" />
+    <ClCompile Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\xnacollision.cpp" />
+    <ClCompile Include="cubemap.cpp" />
+    <ClCompile Include="Effects.cpp" />
+    <ClCompile Include="Midterm.cpp" />
+    <ClCompile Include="Vertex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\Camera.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\d3dApp.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\d3dUtil.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\d3dx11effect.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\GameTimer.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\GeometryGenerator.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\LightHelper.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\MathHelper.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\TextureMgr.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\Waves.h" />
+    <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\xnacollision.h" />
+    <ClInclude Include="cubemap.h" />
+    <ClInclude Include="Effects.h" />
+    <ClInclude Include="Vertex.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Basic.fx" />
+    <FxCompile Include="cubemap.fx" />
+    <FxCompile Include="LightHelper.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
