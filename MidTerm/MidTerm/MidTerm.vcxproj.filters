@@ -63,6 +63,12 @@
     <ClCompile Include="Effects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\Camera.h">
@@ -107,6 +113,12 @@
     <ClInclude Include="Effects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="cubemap.fx">
@@ -116,6 +128,9 @@
       <Filter>FX</Filter>
     </FxCompile>
     <FxCompile Include="LightHelper.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="Terrain.fx">
       <Filter>FX</Filter>
     </FxCompile>
   </ItemGroup>

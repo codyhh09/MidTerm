@@ -88,6 +88,8 @@
     <ClCompile Include="Midterm.cpp">
       <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</SDLCheck>
     </ClCompile>
+    <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -104,12 +106,15 @@
     <ClInclude Include="..\..\..\Visual Studio 2013\3DGameProgramming\Common\xnacollision.h" />
     <ClInclude Include="cubemap.h" />
     <ClInclude Include="Effects.h" />
+    <ClInclude Include="RenderStates.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Basic.fx" />
     <FxCompile Include="cubemap.fx" />
     <FxCompile Include="LightHelper.fx" />
+    <FxCompile Include="Terrain.fx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

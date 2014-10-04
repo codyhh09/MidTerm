@@ -95,13 +95,13 @@ BasicEffect::~BasicEffect()
 }
 #pragma endregion
 
-#pragma region SkyEffect
+#pragma region CubemapEffect
 CubemapEffect::CubemapEffect(ID3D11Device* device, const std::wstring& filename)
 : Effect(device, filename)
 {
 	SkyTech = mFX->GetTechniqueByName("SkyTech");
 	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-	CubeMapSRV = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
+	CubeMap = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
 }
 
 CubemapEffect::~CubemapEffect()
@@ -109,21 +109,62 @@ CubemapEffect::~CubemapEffect()
 }
 #pragma endregion
 
+#pragma region TerrainEffect
+TerrainEffect::TerrainEffect(ID3D11Device* device, const std::wstring& filename)
+: Effect(device, filename)
+{
+	Light1Tech = mFX->GetTechniqueByName("Light1");
+	Light2Tech = mFX->GetTechniqueByName("Light2");
+	Light3Tech = mFX->GetTechniqueByName("Light3");
+	Light1FogTech = mFX->GetTechniqueByName("Light1Fog");
+	Light2FogTech = mFX->GetTechniqueByName("Light2Fog");
+	Light3FogTech = mFX->GetTechniqueByName("Light3Fog");
+
+	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
+	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
+	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
+	FogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
+	FogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
+	DirLights = mFX->GetVariableByName("gDirLights");
+	Mat = mFX->GetVariableByName("gMaterial");
+
+	MinDist = mFX->GetVariableByName("gMinDist")->AsScalar();
+	MaxDist = mFX->GetVariableByName("gMaxDist")->AsScalar();
+	MinTess = mFX->GetVariableByName("gMinTess")->AsScalar();
+	MaxTess = mFX->GetVariableByName("gMaxTess")->AsScalar();
+	TexelCellSpaceU = mFX->GetVariableByName("gTexelCellSpaceU")->AsScalar();
+	TexelCellSpaceV = mFX->GetVariableByName("gTexelCellSpaceV")->AsScalar();
+	WorldCellSpace = mFX->GetVariableByName("gWorldCellSpace")->AsScalar();
+	WorldFrustumPlanes = mFX->GetVariableByName("gWorldFrustumPlanes")->AsVector();
+
+	LayerMapArray = mFX->GetVariableByName("gLayerMapArray")->AsShaderResource();
+	BlendMap = mFX->GetVariableByName("gBlendMap")->AsShaderResource();
+	HeightMap = mFX->GetVariableByName("gHeightMap")->AsShaderResource();
+}
+
+TerrainEffect::~TerrainEffect()
+{
+}
+#pragma endregion
+
 #pragma region Effects
 
-BasicEffect* Effects::BasicFX = 0;
-CubemapEffect*   Effects::CubemapFX = 0;
+BasicEffect*   Effects::BasicFX = 0;
+CubemapEffect*     Effects::CubemapFX = 0;
+TerrainEffect* Effects::TerrainFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
-	BasicFX = new BasicEffect(device, L"Basic.fxo");
-	CubemapFX = new CubemapEffect(device, L"cubemap.fxo");
+	BasicFX = new BasicEffect(device, L"FX/Basic.fxo");
+	CubemapFX = new CubemapEffect(device, L"FX/Sky.fxo");
+	TerrainFX = new TerrainEffect(device, L"FX/Terrain.fxo");
 }
 
 void Effects::DestroyAll()
 {
 	SafeDelete(BasicFX);
 	SafeDelete(CubemapFX);
+	SafeDelete(TerrainFX);
 }
 
 #pragma endregion
