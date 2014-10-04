@@ -68,8 +68,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 TerrainApp::TerrainApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mCubemap(0), mWalkCamMode(false)
 {
-	mMainWndCaption = L"Terrain Demo";
-	mEnable4xMsaa = true;
+	mMainWndCaption = L"Midterm";
+	mEnable4xMsaa = false;
 
 	mLastMousePos.x = 0;
 	mLastMousePos.y = 0;
@@ -113,7 +113,7 @@ bool TerrainApp::Init()
 	InputLayouts::InitAll(md3dDevice);
 	RenderStates::InitAll(md3dDevice);
 
-	mCubemap = new Cubemap(md3dDevice, L"Textures/snowcube1024.dds", 5000.0f);
+	mCubemap = new Cubemap(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f);
 
 	Terrain::InitInfo tii;
 	tii.HeightMapFilename = L"Textures/terrain.raw";
@@ -156,23 +156,13 @@ void TerrainApp::UpdateScene(float dt)
 	if (GetAsyncKeyState('D') & 0x8000)
 		mCam.Strafe(10.0f*dt);
 
-	//
-	// Walk/fly mode
-	//
-	if (GetAsyncKeyState('2') & 0x8000)
-		mWalkCamMode = true;
-	if (GetAsyncKeyState('3') & 0x8000)
-		mWalkCamMode = false;
 
 	// 
 	// Clamp camera to terrain surface in walk mode.
 	//
-	if (mWalkCamMode)
-	{
-		XMFLOAT3 camPos = mCam.GetPosition();
-		float y = mTerrain.GetHeight(camPos.x, camPos.z);
-		mCam.SetPosition(camPos.x, y + 2.0f, camPos.z);
-	}
+	XMFLOAT3 camPos = mCam.GetPosition();
+	float y = mTerrain.GetHeight(camPos.x, camPos.z);
+	mCam.SetPosition(camPos.x, y + 4.0f, camPos.z);
 
 	mCam.UpdateViewMatrix();
 }
@@ -186,9 +176,6 @@ void TerrainApp::DrawScene()
 	md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-	if (GetAsyncKeyState('1') & 0x8000)
-		md3dImmediateContext->RSSetState(RenderStates::WireframeRS);
 
 	mTerrain.Draw(md3dImmediateContext, mCam, mDirLights);
 

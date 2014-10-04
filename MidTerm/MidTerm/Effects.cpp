@@ -155,9 +155,9 @@ TerrainEffect* Effects::TerrainFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
-	BasicFX = new BasicEffect(device, L"FX/Basic.fxo");
-	CubemapFX = new CubemapEffect(device, L"FX/Sky.fxo");
-	TerrainFX = new TerrainEffect(device, L"FX/Terrain.fxo");
+	BasicFX = new BasicEffect(device, L"Basic.fxo");
+	CubemapFX = new CubemapEffect(device, L"cubemap.fxo");
+	TerrainFX = new TerrainEffect(device, L"Terrain.fxo");
 }
 
 void Effects::DestroyAll()
