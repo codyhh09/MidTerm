@@ -73,7 +73,7 @@ void Cubemap::Draw(ID3D11DeviceContext* dc, const Camera& camera)
 
 	XMMATRIX WVP = XMMatrixMultiply(T, camera.ViewProj());
 
-	Effects::BasicFX->SetWorldViewProj(WVP);
+	Effects::CubemapFX->SetWorldViewProj(WVP);
 	Effects::CubemapFX->SetCubeMap(mCubeMapSRV);
 
 
