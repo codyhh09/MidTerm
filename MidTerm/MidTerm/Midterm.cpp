@@ -21,11 +21,11 @@
 #include "Cubemap.h"
 #include "Terrain.h"
 
-class TerrainApp : public D3DApp
+class MidTerm : public D3DApp
 {
 public:
-	TerrainApp(HINSTANCE hInstance);
-	~TerrainApp();
+	MidTerm(HINSTANCE hInstance);
+	~MidTerm();
 
 	bool Init();
 	void OnResize();
@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	TerrainApp theApp(hInstance);
+	MidTerm theApp(hInstance);
 
 	if (!theApp.Init())
 		return 0;
@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	return theApp.Run();
 }
 
-TerrainApp::TerrainApp(HINSTANCE hInstance)
+MidTerm::MidTerm(HINSTANCE hInstance)
 : D3DApp(hInstance), mCubemap(0), mWalkCamMode(false)
 {
 	mMainWndCaption = L"Midterm";
@@ -92,7 +92,7 @@ TerrainApp::TerrainApp(HINSTANCE hInstance)
 	mDirLights[2].Direction = XMFLOAT3(-0.57735f, -0.57735f, -0.57735f);
 }
 
-TerrainApp::~TerrainApp()
+MidTerm::~MidTerm()
 {
 	md3dImmediateContext->ClearState();
 
@@ -103,7 +103,7 @@ TerrainApp::~TerrainApp()
 	RenderStates::DestroyAll();
 }
 
-bool TerrainApp::Init()
+bool MidTerm::Init()
 {
 	if (!D3DApp::Init())
 		return false;
@@ -113,7 +113,7 @@ bool TerrainApp::Init()
 	InputLayouts::InitAll(md3dDevice);
 	RenderStates::InitAll(md3dDevice);
 
-	mCubemap = new Cubemap(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f);
+	mCubemap = new Cubemap(md3dDevice, L"Textures/snowcube1024.dds", 5000.0f);
 
 	Terrain::InitInfo tii;
 	tii.HeightMapFilename = L"Textures/terrain.raw";
@@ -132,18 +132,19 @@ bool TerrainApp::Init()
 	return true;
 }
 
-void TerrainApp::OnResize()
+void MidTerm::OnResize()
 {
 	D3DApp::OnResize();
 
 	mCam.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 3000.0f);
 }
 
-void TerrainApp::UpdateScene(float dt)
+void MidTerm::UpdateScene(float dt)
 {
 	//
 	// Control the camera.
 	//
+
 	if (GetAsyncKeyState('W') & 0x8000)
 		mCam.Walk(10.0f*dt);
 
@@ -156,10 +157,10 @@ void TerrainApp::UpdateScene(float dt)
 	if (GetAsyncKeyState('D') & 0x8000)
 		mCam.Strafe(10.0f*dt);
 
-
 	// 
 	// Clamp camera to terrain surface in walk mode.
 	//
+
 	XMFLOAT3 camPos = mCam.GetPosition();
 	float y = mTerrain.GetHeight(camPos.x, camPos.z);
 	mCam.SetPosition(camPos.x, y + 4.0f, camPos.z);
@@ -167,7 +168,7 @@ void TerrainApp::UpdateScene(float dt)
 	mCam.UpdateViewMatrix();
 }
 
-void TerrainApp::DrawScene()
+void MidTerm::DrawScene()
 {
 	md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const float*>(&Colors::Silver));
 	md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -190,7 +191,7 @@ void TerrainApp::DrawScene()
 	HR(mSwapChain->Present(0, 0));
 }
 
-void TerrainApp::OnMouseDown(WPARAM btnState, int x, int y)
+void MidTerm::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
@@ -198,12 +199,12 @@ void TerrainApp::OnMouseDown(WPARAM btnState, int x, int y)
 	SetCapture(mhMainWnd);
 }
 
-void TerrainApp::OnMouseUp(WPARAM btnState, int x, int y)
+void MidTerm::OnMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void TerrainApp::OnMouseMove(WPARAM btnState, int x, int y)
+void MidTerm::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
