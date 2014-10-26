@@ -287,9 +287,9 @@ bool InitScene()
 
 	CreateSphere(10, 10);
 
-	if (!LoadObjModel(L"table.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
+	if (!LoadObjModel(L"bottle.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
 		return false;
-	if (!LoadObjModel(L"bottle.obj", &RunnerVertBuff, &RunnerIndexBuff, RunnerSubsetIndexStart, RunnerSubsetTexture, material, RunnerSubsets, true, true, RunnerVertPosArray, RunnerVertIndexArray))
+	if (!LoadObjModel(L"house1.obj", &RunnerVertBuff, &RunnerIndexBuff, RunnerSubsetIndexStart, RunnerSubsetTexture, material, RunnerSubsets, true, true, RunnerVertPosArray, RunnerVertIndexArray))
 		return false;
 
 	// Get bounding volume information
@@ -460,7 +460,7 @@ bool InitScene()
 
 	cmdesc.CullMode = D3D11_CULL_NONE;
 
-	//cmdesc.FillMode = D3D11_FILL_WIREFRAME;
+	cmdesc.FillMode = D3D11_FILL_SOLID;
 	hr = d3d11Device->CreateRasterizerState(&cmdesc, &RSCullNone);
 
 	D3D11_DEPTH_STENCIL_DESC dssDesc;
@@ -478,7 +478,7 @@ bool InitScene()
 
 	Rotation = XMMatrixRotationY(3.14f);
 	Scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	Translation = XMMatrixTranslation(bottleXPos + bxadd*10.0f, 4.0f, bottleZPos + bzadd*10.0f);
+	Translation = XMMatrixTranslation(0, 0, 0);
 
 	RunnerWorld = Rotation * Scale * Translation;
 
@@ -714,18 +714,68 @@ void DetectInput(double time){
 
 	DIKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
+	POINT mousePos;
+
+	GetCursorPos(&mousePos);
+	ScreenToClient(hwnd, &mousePos);
+
+	int mousex = mousePos.x;
+	int mousey = mousePos.y;
+
+	XMVECTOR prwsPos, prwsDir;
+	pickRayVector(mousex, mousey, prwsPos, prwsDir);
+
+	double pickOpStartTime = GetTime();
+
+	float pRToPointDist = 0.0f; // Closest distance from the pick ray to the objects center
+	float tempDist;
+	float closestDist = FLT_MAX;
+
+	XMVECTOR bottlePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR pOnLineNearBottle = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+	// For the Bounding Sphere to work correctly, we need to make sure we are testing
+	// the distance from the objects "actual" center and the pick ray. We have stored
+	// the distance from (0, 0, 0) in the objects model space to the object "actual"
+	// center in bottleCenterOffset. So now we just need to add that difference to
+	// the bottles world space position, this way the bounding sphere will be centered
+	// on the object real center.
+	bottlePos = XMVector3TransformCoord(bottlePos, RunnerWorld) + RunnerCenterOffset;
+
+	// This equation gets the point on the pick ray which is closest to bottlePos
+	pOnLineNearBottle = prwsPos + XMVector3Dot((bottlePos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
+
+	// Now we get the distance between bottlePos and pOnLineNearBottle
+	// This line is slightly less accurate, but it offers a performance increase by
+	// estimating the distance using XMVector3LengthEst()
+	//pRToPointDist = XMVectorGetX(XMVector3LengthEst(pOnLineNearBottle - bottlePos));				
+	pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - bottlePos));
+
+	// If the distance between the closest point on the pick ray (pOnLineNearBottle) to bottlePos
+	// is less than the bottles bounding sphere (represented by a float called bottleBoundingSphere)
+	// then we know the pick ray has intersected with the bottles bounding sphere, and we can move on
+	// to testing if the pick ray has actually intersected with the bottle itself.
+	if (pRToPointDist < RunnerBoundingSphere)
+	{
+		// This line is the distance to the pick ray intersection with the sphere
+		tempDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - prwsPos));
+
+		// Check for picking with the actual model now
+		tempDist = pick(prwsPos, prwsDir, RunnerVertPosArray, RunnerVertIndexArray, RunnerWorld);
+	}
+
 	if (keyboardState[DIK_ESCAPE] & 0x80)
 		PostMessage(hwnd, WM_DESTROY, 0, 0);
 
 	float speed = 10.0f * time;
 
-	if (keyboardState[DIK_A] & 0x80)
+	if (keyboardState[DIK_A] & 0x80 && tempDist > 1.0f)
 		moveLeftRight -= speed;
-	if (keyboardState[DIK_D] & 0x80)
+	if (keyboardState[DIK_D] & 0x80 && tempDist > 1.0f)
 		moveLeftRight += speed;
-	if (keyboardState[DIK_W] & 0x80)
+	if (keyboardState[DIK_W] & 0x80 && tempDist > 1.0f)
 		moveBackForward += speed;		
-	if (keyboardState[DIK_S] & 0x80)
+	if (keyboardState[DIK_S] & 0x80 && tempDist > 1.0f)
 		moveBackForward -= speed;
 	
 	if (!mouseCurrState.rgbButtons[0]){
