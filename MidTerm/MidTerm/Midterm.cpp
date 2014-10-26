@@ -74,6 +74,8 @@ std::vector<std::wstring> textureNameArray;
 int frameCount = 0;
 int fps = 0;
 
+float tempDist;
+
 int NumSphereVertices;
 int NumSphereFaces;
 
@@ -728,7 +730,7 @@ void DetectInput(double time){
 	double pickOpStartTime = GetTime();
 
 	float pRToPointDist = 0.0f; // Closest distance from the pick ray to the objects center
-	float tempDist;
+
 	float closestDist = FLT_MAX;
 
 	XMVECTOR bottlePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1252,10 +1254,24 @@ void RenderText(std::wstring text, int inInt)
 	// Clear D2D Background
 	D2DRenderTarget->Clear(D2D1::ColorF(0.0f, 0.0f, 0.0f, 0.0f));
 
+	///////////////**************new**************////////////////////
+	// Display which picking method we are doing
+	std::wstring pickWhatStr;
+	if (pickWhat == 0)
+		pickWhatStr = L"Bounding Sphere";
+	if (pickWhat == 1)
+		pickWhatStr = L"Bounding Box";
+	if (pickWhat == 2)
+		pickWhatStr = L"Model";
+
 	//Create our string
 	std::wostringstream printString;
-	printString << text << inInt << L"\n" << L"Score: " << score << L"\n" << L"closest Dist: " << closestDist << L"\n" << L"Pick Operation Speed: " << pickOpSpeed << L"\n";
-
+	printString << text << inInt << L"\n"
+		<< L"Score: " << score << L"\n"
+		<< L"Picked Dist: " << tempDist << L"\n"
+		<< L"Pick Operation Speed: " << pickOpSpeed << L"\n"
+		<< L"Picking Method (P): " << pickWhatStr;
+	///////////////**************new**************////////////////////
 	printText = printString.str();
 
 	// Set the Font Color
@@ -1268,7 +1284,13 @@ void RenderText(std::wstring text, int inInt)
 	D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, Width, Height);
 
 	// Draw the Text
-	D2DRenderTarget->DrawText(printText.c_str(), wcslen(printText.c_str()), TextFormat, layoutRect, Brush);
+	D2DRenderTarget->DrawText(
+		printText.c_str(),
+		wcslen(printText.c_str()),
+		TextFormat,
+		layoutRect,
+		Brush
+		);
 
 	D2DRenderTarget->EndDraw();
 
