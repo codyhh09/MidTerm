@@ -289,9 +289,9 @@ bool InitScene()
 
 	CreateSphere(10, 10);
 
-	if (!LoadObjModel(L"bottle.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
+	if (!LoadObjModel(L"house1.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
 		return false;
-	if (!LoadObjModel(L"house1.obj", &RunnerVertBuff, &RunnerIndexBuff, RunnerSubsetIndexStart, RunnerSubsetTexture, material, RunnerSubsets, true, true, RunnerVertPosArray, RunnerVertIndexArray))
+	if (!LoadObjModel(L"bottle.obj", &RunnerVertBuff, &RunnerIndexBuff, RunnerSubsetIndexStart, RunnerSubsetTexture, material, RunnerSubsets, true, true, RunnerVertPosArray, RunnerVertIndexArray))
 		return false;
 
 	// Get bounding volume information
@@ -480,7 +480,7 @@ bool InitScene()
 
 	Rotation = XMMatrixRotationY(3.14f);
 	Scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	Translation = XMMatrixTranslation(0, 0, 0);
+	Translation = XMMatrixTranslation(10.0f, 0, 10.0f);
 
 	RunnerWorld = Rotation * Scale * Translation;
 
