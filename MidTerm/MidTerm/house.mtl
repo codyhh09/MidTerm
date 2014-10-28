@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 26.10.2014 15:18:06
+# File Created: 27.10.2014 12:51:22
 
-newmtl 05___Default
+newmtl 02___Default
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,20 +12,10 @@ newmtl 05___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\choward8\Downloads\lightandshadow_silhouette_2560x1600.dds
-	map_Kd C:\Users\choward8\Downloads\lightandshadow_silhouette_2560x1600.dds
+	map_Ka C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\flooring.jpg
+	map_Kd C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\flooring.jpg
 
-newmtl wire_213154229
-	Ns 32
-	d 1
-	Tr 0
-	Tf 1 1 1
-	illum 2
-	Ka 0.8353 0.6039 0.8980
-	Kd 0.8353 0.6039 0.8980
-	Ks 0.3500 0.3500 0.3500
-
-newmtl 03___Default
+newmtl 01___Default
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -36,5 +26,47 @@ newmtl 03___Default
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\choward8\Downloads\1.dds
-	map_Kd C:\Users\choward8\Downloads\1.dds
+	map_Ka C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\wall.jpg
+	map_Kd C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\wall.jpg
+
+newmtl 07___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\grass.jpg
+	map_Kd C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\grass.jpg
+
+newmtl 08___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\rockstar.jpg
+	map_Kd C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\rockstar.jpg
+
+newmtl 09___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5882 0.5882 0.5882
+	Kd 0.5882 0.5882 0.5882
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\stairs.jpg
+	map_Kd C:\Users\choward8\Documents\AdvGraphic\MidTerm\MidTerm\stairs.jpg

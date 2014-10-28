@@ -96,6 +96,10 @@ XMMATRIX meshWorld;
 int meshSubsets = 0;
 std::vector<int> meshSubsetIndexStart;
 std::vector<int> meshSubsetTexture;
+float meshBoundingSphere = 0.0f;
+std::vector<XMFLOAT3> meshBoundingBoxVertPosArray;
+std::vector<DWORD> meshBoundingBoxVertIndexArray;
+XMVECTOR meshCenterOffset;
 
 std::wstring printText;
 
@@ -172,6 +176,7 @@ float pickedDist = 0.0f;
 int pickWhat = 0;
 double pickOpSpeed = 0.0f;
 bool isPDown = false;
+
 
 void CleanUp();
 bool InitScene();
@@ -289,13 +294,13 @@ bool InitScene()
 
 	CreateSphere(10, 10);
 
-	if (!LoadObjModel(L"house1.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
+	if (!LoadObjModel(L"house.obj", &meshVertBuff, &meshIndexBuff, meshSubsetIndexStart, meshSubsetTexture, material, meshSubsets, true, true, groundVertPosArray, groundVertIndexArray))
 		return false;
 	if (!LoadObjModel(L"bottle.obj", &RunnerVertBuff, &RunnerIndexBuff, RunnerSubsetIndexStart, RunnerSubsetTexture, material, RunnerSubsets, true, true, RunnerVertPosArray, RunnerVertIndexArray))
 		return false;
 
 	// Get bounding volume information
-	CreateBoundingVolumes(RunnerVertPosArray, RunnerBoundingBoxVertPosArray, RunnerBoundingBoxVertIndexArray, RunnerBoundingSphere, RunnerCenterOffset);
+	CreateBoundingVolumes(groundVertPosArray, meshBoundingBoxVertPosArray, meshBoundingBoxVertIndexArray, meshBoundingSphere, meshCenterOffset);
 
 	// Compile Shaders from shader file
 	hr = D3DX11CompileFromFile(L"Effects.fx", 0, 0, "VS", "vs_4_0", 0, 0, 0, &VS_Buffer, 0, 0);
@@ -480,7 +485,7 @@ bool InitScene()
 
 	Rotation = XMMatrixRotationY(3.14f);
 	Scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	Translation = XMMatrixTranslation(10.0f, 0, 10.0f);
+	Translation = XMMatrixTranslation(10.0f, 0, 10);
 
 	RunnerWorld = Rotation * Scale * Translation;
 
@@ -733,8 +738,8 @@ void DetectInput(double time){
 
 	float closestDist = FLT_MAX;
 
-	XMVECTOR bottlePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR pOnLineNearBottle = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR RunnerPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR pOnLineNearRunner = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// For the Bounding Sphere to work correctly, we need to make sure we are testing
 	// the distance from the objects "actual" center and the pick ray. We have stored
@@ -742,28 +747,28 @@ void DetectInput(double time){
 	// center in bottleCenterOffset. So now we just need to add that difference to
 	// the bottles world space position, this way the bounding sphere will be centered
 	// on the object real center.
-	bottlePos = XMVector3TransformCoord(bottlePos, RunnerWorld) + RunnerCenterOffset;
+	RunnerPos = XMVector3TransformCoord(RunnerPos, meshWorld) + meshCenterOffset;
 
 	// This equation gets the point on the pick ray which is closest to bottlePos
-	pOnLineNearBottle = prwsPos + XMVector3Dot((bottlePos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
+	pOnLineNearRunner = prwsPos + XMVector3Dot((RunnerPos - prwsPos), prwsDir) / XMVector3Dot(prwsDir, prwsDir) * prwsDir;
 
 	// Now we get the distance between bottlePos and pOnLineNearBottle
 	// This line is slightly less accurate, but it offers a performance increase by
 	// estimating the distance using XMVector3LengthEst()
 	//pRToPointDist = XMVectorGetX(XMVector3LengthEst(pOnLineNearBottle - bottlePos));				
-	pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - bottlePos));
+	pRToPointDist = XMVectorGetX(XMVector3Length(pOnLineNearRunner - RunnerPos));
 
 	// If the distance between the closest point on the pick ray (pOnLineNearBottle) to bottlePos
 	// is less than the bottles bounding sphere (represented by a float called bottleBoundingSphere)
 	// then we know the pick ray has intersected with the bottles bounding sphere, and we can move on
 	// to testing if the pick ray has actually intersected with the bottle itself.
-	if (pRToPointDist < RunnerBoundingSphere)
+	if (pRToPointDist < meshBoundingSphere)
 	{
 		// This line is the distance to the pick ray intersection with the sphere
-		tempDist = XMVectorGetX(XMVector3Length(pOnLineNearBottle - prwsPos));
+		tempDist = XMVectorGetX(XMVector3Length(pOnLineNearRunner - prwsPos));
 
 		// Check for picking with the actual model now
-		tempDist = pick(prwsPos, prwsDir, RunnerVertPosArray, RunnerVertIndexArray, RunnerWorld);
+		tempDist = pick(prwsPos, prwsDir, groundVertPosArray, groundVertIndexArray, meshWorld);
 	}
 
 	if (keyboardState[DIK_ESCAPE] & 0x80)
@@ -771,13 +776,13 @@ void DetectInput(double time){
 
 	float speed = 10.0f * time;
 
-	if (keyboardState[DIK_A] & 0x80 && tempDist > 1.0f)
+	if (keyboardState[DIK_A] & 0x80)// && tempDist >= 2.0f)
 		moveLeftRight -= speed;
-	if (keyboardState[DIK_D] & 0x80 && tempDist > 1.0f)
+	if (keyboardState[DIK_D] & 0x80)// && tempDist >= 2.0f)
 		moveLeftRight += speed;
-	if (keyboardState[DIK_W] & 0x80 && tempDist > 1.0f)
+	if (keyboardState[DIK_W] & 0x80)// && tempDist >= 2.0f)
 		moveBackForward += speed;		
-	if (keyboardState[DIK_S] & 0x80 && tempDist > 1.0f)
+	if (keyboardState[DIK_S] & 0x80)// && tempDist >= 2.0f)
 		moveBackForward -= speed;
 	
 	if (!mouseCurrState.rgbButtons[0]){
@@ -799,14 +804,15 @@ void UpdateCamera(){
 	camTarget = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
 	camTarget = XMVector3Normalize(camTarget);
 
+	// First-Person Camera
 	XMMATRIX RotateYTempMatrix;
 	RotateYTempMatrix = XMMatrixRotationY(camYaw);
-
-	// walk
 	camRight = XMVector3TransformCoord(DefaultRight, RotateYTempMatrix);
 	camUp = XMVector3TransformCoord(camUp, RotateYTempMatrix);
 	camForward = XMVector3TransformCoord(DefaultForward, RotateYTempMatrix);
 
+	camPosition += moveLeftRight*camRight;
+	camPosition += moveBackForward*camForward;
 	camPosition += moveLeftRight*camRight;
 	camPosition += moveBackForward*camForward;
 
